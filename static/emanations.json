@@ -1,0 +1,35 @@
+[
+  {
+    "identifier": 0,
+    "attribute": 0,
+    "name": "Crown",
+    "description":
+    [
+      { "Power": "Increase the effectiveness of transmutations and arts by +1." },
+      { "Transmutation": "Learn to channel your physical strength into the mental and spiritual realms, enabling you to target and strike all attributes." }
+    ],
+    "level": 1
+  },
+  {
+    "identifier": 1,
+    "attribute": 1,
+    "name": "Crown",
+    "description":
+    [
+      { "Endurance": "Increase your action points by +1" },
+      { "Transmutation": "Learn to channel your mental strength into the physical and spiritual realms, enabling you to target and strike all attributes." }
+    ],
+    "level": 1
+  },
+  {
+    "identifier": 2,
+    "attribute": 2,
+    "name": "Crown",
+    "description":
+    [
+      { "Evasion": "Increase your armour class by +1" },
+      { "Transmutation": "Learn to channel your spiritual strength into the physical and mental realms, enabling you to target and strike all attributes." }
+    ],
+    "level": 1
+  }
+]
