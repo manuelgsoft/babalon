@@ -1,6 +1,7 @@
 import random
 from combat.Entity import Entity
 from combat.Action import Action
+from utils.constants import ATTRIBUTES
 
 
 class ActionQueue:
@@ -25,7 +26,7 @@ class ActionQueue:
         """
         if not entity:
             raise ValueError("Entity cannot be None.")
-        self.action_queue = self.__generate_action_queue(entity)
+        self.action_queue = self._generate_action_queue(entity)
 
     def __repr__(self):
         """
@@ -34,9 +35,9 @@ class ActionQueue:
         Returns:
             str: A string representation of the list of action details (in dictionary form).
         """
-        return str([vars(attribute) for attribute in self.action_queue]) + '\n'
+        return str([f'{ATTRIBUTES[action.attribute]}{'/shifted' if action.shifted else ''}' for action in self.action_queue]) + '\n'
 
-    def __generate_action_queue(self, entity: Entity) -> list[Action]:
+    def _generate_action_queue(self, entity: Entity) -> list[Action]:
         """
         Generates a list of actions based on the attributes of the entity (body, mind, soul).
         Randomizes the order of the actions before returning.
@@ -102,7 +103,7 @@ class ActionQueue:
             current_action.shifted = True
             self.action_queue.append(current_action)
 
-    def consume_actions(self, actions: list[int]) -> bool:
+    def consume_actions(self, actions: list[int], shift: bool) -> bool:
         """
         Consumes actions from the queue based on the specified action requirements.
 
@@ -135,12 +136,17 @@ class ActionQueue:
 
         # Consume the actions from the queue
         new_queue = []
+        shifted_queue = []
         for action in self.action_queue:
             attribute = action.attribute
             if actions[attribute] > 0:
-                actions[attribute] -= 1
+                if not shift:
+                    actions[attribute] -= 1
+                else:
+                    action.shifted = True
+                    shifted_queue.append(action)
             else:
                 new_queue.append(action)
 
-        self.action_queue = new_queue
+        self.action_queue = new_queue + shifted_queue
         return True
