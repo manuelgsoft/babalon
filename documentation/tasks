@@ -1,1 +1,210 @@
-Apply model changes to log.py
+
+DECISIONES DE DISEÑO
+    1. Cuando hago x2 en carta astral shifteo solo el último token o todos los involucrados en la acción
+        Shiftear todos los token
+    2. Veneno valor fijo o variable
+        Valor variable
+    3.
+
+------------------------------
+
+Attack
+    d12
+Damage
+    d3
+Levels
+    1-6
+
+------------------------------
+
+Average Health Points per Attribute (Enemies) = 4 - 8 - 12 - 16 - 20 - 24
+Average Health Points per Attribute (Bosses and player) = 6 - 12 - 18 - 24 - 30 - 36
+Average Health Points per Entity (Enemies) = 12 - 24 - 36 - 48 - 60 - 72
+Average Health Points per Entity (Bosses and player) = 18 - 36 - 54 - 72 - 90 - 108
+Average Health Points per Entity = Average damage * 6 or * 9
+    Level 1
+        Regular Enemy: 12
+        Boss: 18
+    Level 2
+        Regular Enemy: 24
+        Boss: 36
+    Level 3
+        Regular Enemy: 36
+        Boss: 54
+    Level 4
+        Regular Enemy: 48
+        Boss: 72
+    Level 5
+        Regular Enemy: 60
+        Boss: 90
+    Level 6
+        Regular Enemy: 72
+        Boss: 108
+
+------------------------------
+
+Level 1: 1 action per attribute
+Level 3: 2 actions per attribute
+Level 5: 3 actions per attribute
+
+------------------------------
+
+Modeling
+    Astral chart
+    Tier
+    Armour class
+    Attack throws
+    Damage throws
+    Health points
+    Skill points
+    Actions
+    Equipment
+    Skills
+    Experience points
+
+------------------------------
+
+Status:
+    Hit advantage: Throw 2 hit dice and keep highest value
+    Hit disadvantage: Throw 2 hit dice and keep highest value
+    Hit modifier
+
+    Effect advantage:
+    Effect disadvantage:
+    Effect modifier
+
+    Bleeding: Lose body health over time
+    Insanity: Lose mind health over time
+    Skepticism: Lose soul health over time
+
+    Stagnation: remove actions
+
+Hit advantage: throw 2 attack dice and keep highest value
+Hit disadvantage: throw 2 attack dice and keep lowest value
+Effect advantage: throw 2 effect dice and keep lowest value
+Effect disadvantage: throw 2 effect dice and keep lowest value
+Astral chart x2: Hit advantage + effect advantage + shift current action
+Astral chart x0.5: Hit disadvantage + effect disadvantage
+Status 1: Lose health over time
+Status 2: Remove actions
+
+Status:
+    [0, 0, 0, 0, 0]
+Position meanings:
+    Position 0: Hit advantage
+        0 - Disadvantage
+        1 - Nothing
+        2 - Advantage
+    Position 1: Effect advantage
+        0 - Disadvantage
+        1 - Nothing
+        2 - Advantage
+    Position 2:
+        0 - Don't lose health over time
+        X - Lose health over time during the next X turns
+    Position 3:
+        X - Number of actions lost each turn
+    Position 4:
+        X - Remaining turns in which actions are lost
+
+
+------------------------------
+
+Guide to write art descriptions
+    1. Start with one of the following
+        Inflict
+        Restore
+        Remove
+        Gain
+        Upon
+
+------------------------------
+
+Leveling up
+    An attribute levels up when it reaches the required experience points. Upon leveling up an attribute, the player has
+    two main decisions:
+        1. Choose one of three predefined talents that enhance some of the attribute's characteristics.
+        2. Choose which two new skills to learn. Each level has three new skills to learn.
+
+    Aside from these decisions, the attribute will always increase its health points and energy points.
+
+    The maximum level an attribute can acquire is level 6.
+
+    Each level you unlock three talents and three skills. You choose one talent and two skills per level. You can always
+    choose a skill/talent from a previous level that you didn't choose back then.
+
+------------------------------
+
+1. Crown
+2. Wisdom
+3. Understanding
+4. Mercy
+5. Strength
+6. Beauty
+7. Victory
+8. Glory
+9. Foundation
+10. Kingdom
+11. Knowledge
+
+------------------------------
+
+Combat flowchart
+    decide turn
+    while combat != over
+        if turn == player turn
+            generate action queue
+            while action queue != empty
+                apply action effects
+                wait for input
+                if input == transmutation or input == skill
+                    select target attribute
+                    if action points > 0 and can perform action
+                        start performing action
+                        if d12 + player attribute hit modifier >= enemy attribute ac
+                            if enemy astral chart [attribute id] == 0
+                                effect = min dice value
+                                consume two first actions
+                            else if enemy astral chart [attribute id] == 1
+                                effect = throw dice
+                                consume action
+                            else
+                                effect = max dice value
+                                shift current action
+                            if input == skill
+                                consume action point
+                else if input == special skill
+                    if attribute == body
+                        use item
+                    elif attribute == mind
+                        start dialogue
+                    elif attribute == soul
+                        communion
+                    destroy two first actions
+                else if shift
+                    if current action is not shifted
+                        shift current action
+                        move to the back of the queue
+                    else
+                        destroy current action
+                check if combat = over
+                if combat == over
+                    win = player or enemy
+                    break
+            turn = enemy
+        else
+            generate enemy action queue
+            while enemy action queue != empty
+                apply action effects
+                perform enemy action
+                consume enemy action
+                check if combat = over
+                if combat == over
+                    win = player or enemy
+                    break
+            turn = player
+    if win == player
+        add experience points
+        print victory
+    else
+        print game over
