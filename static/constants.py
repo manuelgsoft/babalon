@@ -1,1 +1,0 @@
-ATTRIBUTES = ('body', 'mind', 'soul')

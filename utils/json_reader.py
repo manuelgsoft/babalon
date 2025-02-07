@@ -45,19 +45,19 @@ def read_enemy(identifier: int) -> dict:
     return __read_json_file(file_path, key=identifier)
 
 
-def read_skills(skills_to_read: list[int]) -> list[dict]:
+def read_arts(arts_to_read: list[int]) -> list[dict]:
     """
-    Read specific skills from the skills.json file based on provided indices.
+    Read specific arts from the arts.json file based on provided indices.
 
-    :param skills_to_read: A list of skill indices to retrieve
-    :return: A list of skill dictionaries that match the provided indices
+    :param arts_to_read: A list of art indices to retrieve
+    :return: A list of art dictionaries that match the provided indices
     """
-    file_path = os.path.join(__get_source_root(), 'static', 'skills.json')
+    file_path = os.path.join(__get_source_root(), 'static', 'arts.json')
 
     with open(file_path, 'r') as file:
         data = json.load(file)
 
-        # Filter skills by index
-        filtered_skills = [skill for skill in data if skill['identifier'] in skills_to_read]
+        # Filter arts by index
+        filtered_arts = [art for art in data if art['identifier'] in arts_to_read]
 
-        return filtered_skills
+        return filtered_arts
