@@ -1,0 +1,92 @@
+[
+  {
+    "identifier": 0,
+    "attribute": 0,
+    "name": "Uppercut",
+    "description": "Inflict $-$ damage to any target attribute",
+    "level": 1,
+    "alignment": 0,
+    "actions": [1, 0, 0],
+    "dice": [1, 3]
+  },
+  {
+    "identifier": 1,
+    "attribute": 0,
+    "name": "Tooth and nail",
+    "description": "Inflict an ailment that causes the target attribute to lose $-$ health points during each of its next three actions",
+    "level": 1,
+    "alignment": 0,
+    "actions": [1, 0, 0],
+    "dice": [0, 2]
+  },
+  {
+    "identifier": 2,
+    "attribute": 0,
+    "name": "Calculated strike",
+    "description": "Inflict $-$ damage to any target attribute. The hit and effect modifier of that attribute is reduced by the amount of damage dealt during its next action",
+    "level": 1,
+    "alignment": 3,
+    "actions": [1, 1, 0],
+    "dice": [1, 2]
+  },
+  {
+    "identifier": 3,
+    "attribute": 1,
+    "name": "Provoke",
+    "description": "Inflict hit disadvantage upon a target attribute during its next action",
+    "level": 1,
+    "alignment": 1,
+    "actions": [0, 1, 0],
+    "dice": []
+  },
+  {
+    "identifier": 4,
+    "attribute": 1,
+    "name": "Wit",
+    "description": "Upon the enemy failing to hit you, inflict $-$ damage and grant your mind hit and effect advantage during its next action.",
+    "level": 1,
+    "alignment": 1,
+    "actions": [0, 1, 0],
+    "dice": [0, 3]
+  },
+  {
+    "identifier": 5,
+    "attribute": 1,
+    "name": "Faith and reason",
+    "description": "Restore $-$ health points to one of your active attributes. If health is restored through this ability, your mind and soul gain a boost to their hit and effect modifiers during their next turn, based on the amount healed",
+    "level": 1,
+    "alignment": 5,
+    "actions": [0, 1, 1],
+    "dice": [0, 3]
+  },
+  {
+    "identifier": 6,
+    "attribute": 2,
+    "name": "Prayer",
+    "description": "Restore $-$ health points to one of your active attributes",
+    "level": 1,
+    "alignment": 2,
+    "actions": [0, 0, 1],
+    "dice": [0, 6]
+  },
+  {
+    "identifier": 7,
+    "attribute": 2,
+    "name": "Respite",
+    "description": "Remove hit and effect disadvantages on any target attribute",
+    "level": 1,
+    "alignment": 2,
+    "actions": [0, 0, 1],
+    "dice": []
+  },
+  {
+    "identifier": 8,
+    "attribute": 2,
+    "name": "Posture of the earth",
+    "description": "Inflict $-$ damage to a random attribute. If the attack causes the attribute to be deceased, your body and soul permanently gain hit and effect modifiers equal to the amount of damage dealt",
+    "level": 1,
+    "alignment": 4,
+    "actions": [1, 0, 1],
+    "dice": [1, 2]
+  }
+]
