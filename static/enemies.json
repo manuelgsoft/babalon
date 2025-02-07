@@ -1,31 +1,45 @@
 [
   {
+    "identifier": 0,
     "name": "Mindless sentinel",
-    "astral_chart": [0, 1, 0, 2, 1, 2, 1],
-    "attributes":[
+    "astral_chart": [0, 2, 0, 1, 1, 2, 2],
+    "attributes":
+    [
       {
-        "attribute": "body",
-        "tier": 0,
-        "armour_class": 7,
-        "hit_modifier": 1,
-        "effect_modifier": 0,
-        "health_points": 15,
-        "current_health_points": 15,
-        "equipment": [],
-        "actions_per_turn": 1,
-        "skills": [0]
+      "attribute": 0,
+      "level": 1,
+      "armour_class": 4,
+      "hit_modifier": 0,
+      "effect_modifier": 1,
+      "health_points": 1,
+      "current_health_points": 1,
+      "action_points": 0,
+      "current_action_points": 0,
+      "experience_points": 0,
+      "actions_per_turn": 2,
+      "available_enhancements": [],
+      "enhancements": [],
+      "arts": [0],
+      "emanations": [],
+      "status": []
       },
       {
-        "attribute": "soul",
-        "tier": 0,
-        "armour_class": 6,
-        "hit_modifier": 1,
-        "effect_modifier": 0,
-        "health_points": 8,
-        "current_health_points": 8,
-        "equipment": [],
-        "actions_per_turn": 1,
-        "skills": [2]
+      "attribute": 2,
+      "level": 1,
+      "armour_class": 4,
+      "hit_modifier": 0,
+      "effect_modifier": 0,
+      "health_points": 1,
+      "current_health_points": 1,
+      "action_points": 0,
+      "current_action_points": 0,
+      "experience_points": 0,
+      "actions_per_turn": 1,
+      "available_enhancements": [],
+      "enhancements": [],
+      "arts": [0],
+      "emanations": [],
+      "status": []
       }
     ]
   }
