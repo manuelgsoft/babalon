@@ -1,6 +1,6 @@
 from combat.ActionQueue import ActionQueue
 from combat.Entity import Entity
-from utils.constants import ATTRIBUTES, SPECIAL_ARTS, ASTRAL_CHART
+from utils.constants import ATTRIBUTES, SPECIAL_ARTS, ASTRAL_CHART, ASTRAL_VALUES
 from utils import dice, combat_utils
 
 import time
@@ -30,10 +30,37 @@ class Log:
                     f'{attribute["effect_modifier"]} Effect modifier | Status: {attribute["status"]}')
         return ''
 
+    def _print_astral_chart(self, is_player: bool):
+        aligned = f'{ASTRAL_VALUES[-1]} - '
+        neutral = f'{ASTRAL_VALUES[0]} - '
+        misaligned = f'{ASTRAL_VALUES[1]} - '
+        entity = self.player if is_player else self.enemy
+        for i, alignment in enumerate(entity.astral_chart):
+            if alignment == -1:
+                aligned += f'{ASTRAL_CHART[i]}, '
+            if alignment == 0:
+                neutral += f'{ASTRAL_CHART[i]}, '
+            if alignment == 1:
+                misaligned += f'{ASTRAL_CHART[i]}, '
+        if len(aligned) == 15:
+            aligned = ''
+        else:
+            aligned = aligned[:-2] + ' | '
+        if len(neutral) == 10:
+            neutral = ''
+        else:
+            neutral = neutral[:-2] + ' | '
+        if len(misaligned) == 18:
+            misaligned = ''
+        else:
+            misaligned = misaligned[:-2]
+        return f'{aligned}{neutral}{misaligned}'
+
+
     def _print_entity(self, entity: Entity, is_player: bool):
         result = f'{entity.name}\n\t'
         #if is_player:
-        result += f'Astral chart: {entity.astral_chart}\n\t'
+        result += f'Astral chart: {self._print_astral_chart(is_player=is_player)}\n\t'
         result += '\n\t'.join([self._print_attribute(entity, attr["attribute"]) for attr in entity.attributes])
         return result
 
@@ -79,9 +106,8 @@ class Log:
             print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id, 0)} performs a transmutation to "
                   f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id, 0)}")
         else:
-            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id, 0)} performs a transmutation to {self.player.name}'s "
-                  f"{ATTRIBUTES.get(player_attribute_id, 0)}")
-
+            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id, 0)} performs a transmutation to "
+                  f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id, 0)} ")
     @_delay_execution
     def input_transmutations(self, player_attribute_id: int):
         transmutations = '0. Go back\n'
@@ -92,13 +118,14 @@ class Log:
             percentage = dice.percentage(number_of_dice=1, sides_of_dice=sides_of_dice, value=attr['armour_class'],
                                           mode=mode)
             transmutations += f'{i + 1}. '
-            transmutations += '[Advantage] ' if mode == 1 else ('[Disadvantage] ' if mode == -1 else '')
+            transmutations += f'[{ASTRAL_CHART[player_attribute_id]}] '
             transmutations += f"Target {ATTRIBUTES[attr["attribute"]]} | "
-            transmutations += f"Astral alignment: {ASTRAL_CHART.get(player_attribute_id, 0)} | "
             transmutations += f'Hit: {percentage}% | '
-            transmutations += f'Damage: {combat_utils.calculate_transmutation_damage_range(self.player, player_attribute_id)}\n'
+            transmutations += f'Damage: {combat_utils.calculate_transmutation_damage_range(self.player, 
+                                                                                           player_attribute_id)}\n'
         return transmutations + 'Select your action:'
 
     @_delay_execution
     def input_actions(self, attribute: int):
-        return f'What will your {ATTRIBUTES.get(attribute, 0)} do?\n1. Transmute\n2. Perform art\n3. {SPECIAL_ARTS.get(attribute, 0)}\n4. Shift\nSelect your action:'
+        return (f'What will your {ATTRIBUTES.get(attribute, 0)} do?\n1. Transmute\n2. Perform art\n3. '
+                f'{SPECIAL_ARTS.get(attribute, 0)}\n4. Shift\nSelect your action:')
