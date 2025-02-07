@@ -34,7 +34,7 @@ class ActionQueue:
         Returns:
             str: A string representation of the list of action details (in dictionary form).
         """
-        return str([vars(attribute) for attribute in self.action_queue])
+        return str([vars(attribute) for attribute in self.action_queue]) + '\n'
 
     def __generate_action_queue(self, entity: Entity) -> list[Action]:
         """
@@ -66,12 +66,7 @@ class ActionQueue:
         try:
             # Add actions for each aspect if present
             for attr in entity.attributes:
-                if attr['attribute'] == 'body':
-                    add_actions(0, attr.get('actions_per_turn', 0))
-                elif attr['attribute'] == 'mind':
-                    add_actions(1, attr.get('actions_per_turn', 0))
-                elif attr['attribute'] == 'soul':
-                    add_actions(2, attr.get('actions_per_turn', 0))
+                add_actions(attr['attribute'], attr.get('actions_per_turn', 0))
 
         except AttributeError as e:
             raise TypeError(f"Entity attributes are not properly set: {e}")
