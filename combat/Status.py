@@ -9,7 +9,12 @@ class Status:
         self.active = True
 
     def __repr__(self):
-        return f'{constants.STATUS[self.identifier]} +{self.effect} for {self.remaining_actions} actions'
+        action = 'actions' if self.remaining_actions > 1 else 'action'
+        if self.identifier in (0, 1, 3, 4):
+            return f'{constants.STATUS[self.identifier]} for {self.remaining_actions} {action}'
+        else:
+            effect = '' if self.identifier in (0, 1, 3, 4) else f'+{self.effect}'
+            return f'{constants.STATUS[self.identifier]} {effect} for {self.remaining_actions} {action}'
 
     def set_remaining_actions(self, remaining_actions: int):
         self.remaining_actions = remaining_actions
