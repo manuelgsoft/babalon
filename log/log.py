@@ -1,77 +1,105 @@
 from combat.ActionQueue import ActionQueue
 from combat.Entity import Entity
-from utils.constants import ATTRIBUTES, SPECIAL_ARTS
-from utils import dice
+from utils.constants import ATTRIBUTES, SPECIAL_ARTS, ASTRAL_CHART
+from utils import dice, combat_utils
 
 import time
 from functools import wraps
 
-# Define the decorator
-def delay_execution(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        time.sleep(0.4)
-        return func(*args, **kwargs)
-    return wrapper
+class Log:
+    def __init__(self, player: Entity, enemy: Entity):
+        self.player = player
+        self.enemy = enemy
 
-# Apply the decorator to each method
-def _print_attribute(entity: Entity, attribute_name: str) -> str:
-    attribute = dict()
-    result = str()
-    for attr in entity.attributes:
-        if attr['attribute'] == attribute_name:
-            attribute = attr
-    if attribute:
-        result = f'{attribute_name}: Level {attribute["level"]} | {attribute["current_health_points"]}/{attribute["health_points"]} HP | ' \
-                 f'{attribute["current_action_points"]}/{attribute["action_points"]} AP | {attribute["armour_class"]} AC | {attribute["hit_modifier"]} Hit modifier | ' \
-                 f'{attribute["effect_modifier"]} Effect modifier | Status: {attribute["status"]}'
-    return result
+    # Define the decorator
+    @staticmethod
+    def _delay_execution(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            time.sleep(1)
+            return func(*args, **kwargs)
+        return wrapper
 
-@delay_execution
-def _print_entity(entity: Entity):
-    result = f'{entity.name}\n\t'
-    for attr in entity.attributes:
-        result += f'{_print_attribute(entity, attr["attribute"])}\n\t'
-    return result
+    def _print_attribute(self, entity: Entity, attribute_id: int) -> str:
+        attribute = next((attr for attr in entity.attributes if attr['attribute'] == attribute_id), None)
+        if attribute:
+            return (f'{ATTRIBUTES[attribute_id].capitalize()}: {attribute["current_health_points"]}/'
+                    f'{attribute["health_points"]} HP | {attribute["current_action_points"]}/'
+                    f'{attribute["action_points"]} AP | {attribute["armour_class"]} AC | '
+                    f'{attribute["hit_modifier"]} Hit modifier | '
+                    f'{attribute["effect_modifier"]} Effect modifier | Status: {attribute["status"]}')
+        return ''
 
+    def _print_entity(self, entity: Entity, is_player: bool):
+        result = f'{entity.name}\n\t'
+        #if is_player:
+        result += f'Astral chart: {entity.astral_chart}\n\t'
+        result += '\n\t'.join([self._print_attribute(entity, attr["attribute"]) for attr in entity.attributes])
+        return result
 
-def print_screen(player: Entity, enemy: Entity, action_queue: ActionQueue):
-    print(_print_entity(player))
-    print(_print_entity(enemy))
-    print(action_queue)
+    @_delay_execution
+    def print_screen(self, action_queue: ActionQueue):
+        print(self._print_entity(self.player, is_player=True))
+        print(self._print_entity(self.enemy, is_player=False))
+        print(f'Action queue\n\t{action_queue}')
 
-@delay_execution
-def print_result(player_won: bool):
-    print('Player won!' if player_won else 'Enemy won...')
+    @_delay_execution
+    def print_result(self, player_won: bool):
+        print('Victory!' if player_won else "Defeat...")
 
-@delay_execution
-def print_transmutation_miss():
-    print('Transmutation missed...')
+    @_delay_execution
+    def print_transmutation_miss(self):
+        print('Transmutation missed...')
 
-@delay_execution
-def print_damage(value: int):
-    print(f'-{value}')
+    @_delay_execution
+    def print_transmutation_hit(self, target_is_player: bool):
+        if target_is_player:
+            print(f"{self.enemy.name}'s transmutation was a success")
+        else:
+            print(f"{self.player.name}'s transmutation was a success")
 
-@delay_execution
-def print_enemy_turn():
-    print('Enemy turn!')
+    @_delay_execution
+    def print_damage(self, value: int, player_attribute_id: int, enemy_attribute_id: int, target_is_player: bool):
+        if target_is_player:
+            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id)} received {value} damage")
+        else:
+            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id)} received {value} damage")
 
-@delay_execution
-def print_transmutation(target_is_player: bool, player_attribute_id: int, enemy_attribute_id: int):
-    if not target_is_player:
-        print(f"Player's {ATTRIBUTES.get(player_attribute_id, 0)} tries to perform a transmutation to the opponent's {ATTRIBUTES.get(enemy_attribute_id, 0)}")
-    else:
-        print(f"Enemy's {ATTRIBUTES.get(enemy_attribute_id, 0)} tries to perform a transmutation to the player's {ATTRIBUTES.get(player_attribute_id, 0)}")
+    @_delay_execution
+    def print_enemy_turn(self):
+        print('Enemy turn!')
 
-@delay_execution
-def input_transmutations(player: Entity, enemy: Entity, player_attribute_id: int):
-    transmutations = str()
-    sides_of_dice = 12 + player.attributes[player_attribute_id]['hit_modifier']
-    for i, attr in enumerate(enemy.get_active_attributes()):
-        percentage = dice.percentage(number_of_dice=1, sides_of_dice=sides_of_dice, value=attr['armour_class'])
-        transmutations += f'{i + 1}. {ATTRIBUTES[attr["attribute"]].capitalize()} transmutation ({percentage} %) \n'
-    return transmutations + 'Select your action:'
+    @_delay_execution
+    def print_no_actions_available(self):
+        print('No actions available')
 
-@delay_execution
-def input_actions(attribute: int):
-    return f'1. Transmute\n2. Perform art\n3. {SPECIAL_ARTS.get(attribute, 0)}\n4. Shift\nSelect your action:'
+    @_delay_execution
+    def print_transmutation(self, target_is_player: bool, player_attribute_id: int, enemy_attribute_id: int):
+        if not target_is_player:
+            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id, 0)} performs a transmutation to "
+                  f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id, 0)}")
+        else:
+            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id, 0)} performs a transmutation to {self.player.name}'s "
+                  f"{ATTRIBUTES.get(player_attribute_id, 0)}")
+
+    @_delay_execution
+    def input_transmutations(self, player_attribute_id: int):
+        transmutations = str()
+        player_attribute = self.player.attributes[player_attribute_id]
+        sides_of_dice = 12 + player_attribute['hit_modifier']
+        for i, attr in enumerate(self.enemy.get_active_attributes()):
+            mode = combat_utils.calculate_mode(self.player, player_attribute_id, self.enemy)
+            percentage = dice.percentage(number_of_dice=1, sides_of_dice=sides_of_dice, value=attr['armour_class'],
+                                          mode=mode)
+            transmutations += f'{i + 1}. '
+            transmutations += '[Advantage] ' if mode == 1 else ('[Disadvantage] ' if mode == -1 else '')
+            transmutations += f"Target {ATTRIBUTES[attr["attribute"]]} | "
+            transmutations += f"Astral alignment: {ASTRAL_CHART.get(player_attribute_id, 0)} | "
+            transmutations += f'Hit: {percentage}% | '
+            transmutations += f'Damage: {combat_utils.calculate_transmutation_damage_range(self.player, player_attribute_id)}\n'
+        return transmutations + 'Select your action:'
+
+    @_delay_execution
+    def input_actions(self, attribute: int):
+
+        return f'What will your {ATTRIBUTES.get(attribute, 0)} do?\n1. Transmute\n2. Perform art\n3. {SPECIAL_ARTS.get(attribute, 0)}\n4. Shift\nSelect your action:'
