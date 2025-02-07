@@ -2,7 +2,7 @@ import random
 from arts.ArtFactory import ArtFactory
 from combat.Entity import Entity
 from combat.ActionQueue import ActionQueue
-from log.log import Log
+from log.Log import Log
 from utils import dice, combat_utils
 
 class Combat:
@@ -101,7 +101,7 @@ class Combat:
             player_input = int(input(self.log.input_transmutations(player_attribute_id=player_attribute_id))) - 1
 
             # Go on if input is in the correct range
-            if 0 <= player_input < len(active_attributes):
+            if -1 <= player_input < len(active_attributes):
                 return player_input
 
     def _handle_player_action(self, player_input, player_attribute_id):
@@ -120,15 +120,16 @@ class Combat:
         # Get index of target attribute
         target_index = self._get_transmutation_input(active_attributes, player_attribute_id)
 
-        # Get identifier of target attribute
-        enemy_attribute_id = active_attributes[target_index]['attribute']
+        if target_index != -1:
+            # Get identifier of target attribute
+            enemy_attribute_id = active_attributes[target_index]['attribute']
 
-        # Log: Print all available transmutations
-        self.log.print_transmutation(target_is_player=False, player_attribute_id=player_attribute_id,
-                                      enemy_attribute_id=enemy_attribute_id)
+            # Log: Print all available transmutations
+            self.log.print_transmutation(target_is_player=False, player_attribute_id=player_attribute_id,
+                                          enemy_attribute_id=enemy_attribute_id)
 
-        # Calculate if transmutation hits. If it's a hit, it deals damage to target attribute and action is consumed
-        self._calculate_hit_and_effect_transmutation(player_attribute_id, target_index)
+            # Calculate if transmutation hits. If it's a hit, it deals damage to target attribute and action is consumed
+            self._calculate_hit_and_effect_transmutation(player_attribute_id, target_index)
 
     def _calculate_hit_and_effect_transmutation(self, attacking_attribute_id: int, defending_attribute_position: int):
         # Get the entity that is performing the transmutation
