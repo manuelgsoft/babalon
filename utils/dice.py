@@ -52,3 +52,34 @@ def check(number_of_dice: int, sides_of_dice: int, value: int) -> bool:
 
     # Check if the rolled value meets or exceeds the target
     return throw(number_of_dice, sides_of_dice) >= value
+
+def percentage(number_of_dice: int, sides_of_dice: int, value: int) -> int:
+    """
+    Calculate the percentage chance of rolling a value or higher
+    with a given number of dice and sides per die.
+
+    Parameters:
+        number_of_dice (int): The number of dice being rolled.
+        sides_of_dice (int): The number of sides on each die.
+        value (int): The target value to match or exceed.
+
+    Returns:
+        int: The chance (in percentage) of rolling the target value or higher.
+    """
+    # Total possible outcomes
+    max_value = number_of_dice * sides_of_dice
+    total_outcomes = max_value - number_of_dice + 1  # All possible sums for the dice
+
+    # Ensure the value is within the possible range
+    if value < number_of_dice:
+        return 100  # Guaranteed success if value is less than the minimum roll
+    elif value > max_value:
+        return 0  # Impossible to roll a value greater than the maximum
+
+    # Calculate the number of successful outcomes (values >= target value)
+    number_of_successes = max_value - value + 1
+
+    # Calculate the percentage chance
+    chance = number_of_successes / total_outcomes
+
+    return int(chance * 100)
