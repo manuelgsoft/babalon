@@ -84,7 +84,7 @@ class Log:
 
     @_delay_execution
     def input_transmutations(self, player_attribute_id: int):
-        transmutations = str()
+        transmutations = '0. Go back\n'
         player_attribute = self.player.attributes[player_attribute_id]
         sides_of_dice = 12 + player_attribute['hit_modifier']
         for i, attr in enumerate(self.enemy.get_active_attributes()):
@@ -101,5 +101,4 @@ class Log:
 
     @_delay_execution
     def input_actions(self, attribute: int):
-
         return f'What will your {ATTRIBUTES.get(attribute, 0)} do?\n1. Transmute\n2. Perform art\n3. {SPECIAL_ARTS.get(attribute, 0)}\n4. Shift\nSelect your action:'
