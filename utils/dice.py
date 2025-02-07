@@ -27,20 +27,21 @@ def throw(number_of_dice: int, sides_of_dice: int, mode: int = 0) -> int:
         return roll_once()
 
 
-def check(number_of_dice: int, sides_of_dice: int, value: int, mode: int = 0) -> bool:
+def check(number_of_dice: int, sides_of_dice: int, modifier: int, value: int, mode: int = 0) -> bool:
     """
     Simulates rolling dice and checks if the total sum meets or exceeds the target value.
 
     Args:
         number_of_dice (int): The number of dice to roll.
         sides_of_dice (int): The number of sides on each die.
+        modifier (int): Value that gets added to roll
         value (int): The target value to compare the sum of the rolls against.
         mode (int): Throw mode: -1 for disadvantage, 0 for normal throw, 1 for advantage.
 
     Returns:
         bool: True if the sum of the rolls is greater than or equal to the target value, False otherwise.
     """
-    return throw(number_of_dice, sides_of_dice, mode) >= value
+    return throw(number_of_dice, sides_of_dice, mode) + modifier >= value
 
 
 def percentage(number_of_dice: int, sides_of_dice: int, value: int, mode: int = 0) -> int:
