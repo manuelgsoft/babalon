@@ -1,11 +1,12 @@
 import random
 
 
-def throw(number_of_dice: int, sides_of_dice: int, mode: int = 0) -> int:
+def throw(number_of_dice: int, sides_of_dice: int, mode: int = 0, modifier: int=0) -> int:
     """
     Simulates throwing a set of dice with optional advantage/disadvantage and returns the total sum of the rolls.
 
     Args:
+        modifier:
         number_of_dice (int): The number of dice to roll.
         sides_of_dice (int): The number of sides on each die.
         mode (int): Throw mode: -1 for disadvantage, 0 for normal throw, 1 for advantage.
@@ -17,7 +18,7 @@ def throw(number_of_dice: int, sides_of_dice: int, mode: int = 0) -> int:
     if number_of_dice <= 0 or sides_of_dice <= 0:
         raise ValueError("Both number_of_dice and sides_of_dice must be positive integers.")
 
-    roll_once = lambda: sum(random.randint(1, sides_of_dice) for _ in range(number_of_dice))
+    roll_once = lambda: sum(random.randint(1, sides_of_dice) for _ in range(number_of_dice)) + modifier
 
     if mode == 2:  # Advantage
         return max(roll_once(), roll_once())
@@ -41,7 +42,7 @@ def check(number_of_dice: int, sides_of_dice: int, modifier: int, value: int, mo
     Returns:
         bool: True if the sum of the rolls is greater than or equal to the target value, False otherwise.
     """
-    return throw(number_of_dice, sides_of_dice, mode) + modifier >= value
+    return throw(number_of_dice, sides_of_dice, mode, modifier) >= value
 
 
 def percentage(number_of_dice: int, sides_of_dice: int, value: int, mode: int = 0) -> int:
