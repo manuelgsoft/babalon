@@ -109,9 +109,11 @@ class Combat:
         if player_input == '1':
             self._player_perform_transmutation(player_attribute_id)
 
+
         # Action 4: Shift
         elif player_input == '4':
             self.action_queue.shift()
+            self.player.update_attribute_status(attribute_id=player_attribute_id)
 
     def _player_perform_transmutation(self, player_attribute_id):
         # Get enemy attributes that are not deceased
@@ -142,6 +144,9 @@ class Combat:
         if self.action_queue.consume_actions([1 if i == attacking_attribute_id else 0 for i in range(3)],
                                                  shift=defending_entity.astral_chart[attacking_attribute_id] == 1):
 
+            # Consume active status
+            attacking_entity.update_attribute_status(attribute_id=attacking_attribute_id)
+
             # If there are actions, get the attribute that is performing the transmutation
             attacker_attribute = next(attr for attr in attacking_entity.attributes
                                       if attr['attribute'] == attacking_attribute_id)
@@ -167,8 +172,13 @@ class Combat:
                 # Deal damage to target attribute
                 defending_entity.deal_damage(damage, defending_attribute_id)
 
-                # Determine if player is attacking or defending to get attributes IDs
+                # Check if this is the player's turn
                 if self.player_turn:
+
+                    # Update enemy's known astral chart
+                    self.enemy.known_astral_chart[attacking_attribute_id] = True
+
+                    # Determine if player is attacking or defending to get attributes IDs
                     player_attribute_id = attacking_attribute_id
                     enemy_attribute_id = defending_attribute_id
                 else:
