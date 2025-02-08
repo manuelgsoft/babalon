@@ -10,13 +10,11 @@ class Entity:
             self.is_player = is_player
             self.name = entity['name']
             self.astral_chart = entity['astral_chart']
+            self.known_astral_chart = entity['known_astral_chart']
             self.attributes = entity['attributes']
 
     def __repr__(self):
         return f'{self.name}\n{self.astral_chart}\n{self.attributes}'
-
-    def set_astral_chart(self, new_astral_chart: list[int]):
-        self.astral_chart = new_astral_chart
 
     def _update_attribute(self, attribute_id: int, key: str, value):
         """Helper method to update an attribute's property."""
@@ -27,6 +25,9 @@ class Entity:
                 attr[key] = value
                 return
         raise ValueError(f"Attribute '{ATTRIBUTES.get(attribute_id)}' not found in entity attributes.")
+
+    def set_astral_chart(self, new_astral_chart: list[int]):
+        self.astral_chart = new_astral_chart
 
     def set_armour_class(self, new_armour_class: int, attribute_id: int):
         self._update_attribute(attribute_id, 'armour_class', new_armour_class)
@@ -97,14 +98,17 @@ class Entity:
                 return
         raise ValueError(f"Attribute '{attribute_id}' not found in entity attributes.")
 
-    def update_all_attribute_status(self, attribute_id: int):
-        for status in self.attributes[attribute_id]['status']:
+    def update_attribute_status(self, attribute_id: int):
+        for i, status in enumerate(self.attributes[attribute_id]['status']):
             status.pass_action()
             if not status.active:
-                del status
+                del self.attributes[attribute_id]['status'][i]
 
     def contains_status(self, status_id: int, attribute_id: int):
         for status in self.attributes[attribute_id]['status']:
             if status.identifier == status_id:
                 return True
         return False
+
+    def discover_astral_chart(self, position: int=0):
+        self.known_astral_chart[position] = True
