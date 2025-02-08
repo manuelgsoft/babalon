@@ -20,15 +20,24 @@ class Log:
             return func(*args, **kwargs)
         return wrapper
 
-    def _print_attribute(self, entity: Entity, attribute_id: int) -> str:
-        attribute = next((attr for attr in entity.attributes if attr['attribute'] == attribute_id), None)
-        if attribute:
-            return (f'{ATTRIBUTES[attribute_id].capitalize()}: {attribute["current_health_points"]}/'
-                    f'{attribute["health_points"]} HP | {attribute["current_action_points"]}/'
-                    f'{attribute["action_points"]} AP | {attribute["armour_class"]} AC | '
-                    f'{attribute["hit_modifier"]} Hit modifier | '
-                    f'{attribute["effect_modifier"]} Effect modifier | Status: {attribute["status"]}')
-        return ''
+    def _print_attribute(self, is_player: bool, attribute_id: int) -> str:
+        if is_player:
+            attribute = next((attr for attr in self.player.attributes if attr['attribute'] == attribute_id), None)
+            if attribute:
+                return (f'{ATTRIBUTES[attribute_id].capitalize()}: {attribute["current_health_points"]}/'
+                        f'{attribute["health_points"]} HP | {attribute["current_action_points"]}/'
+                        f'{attribute["action_points"]} AP | {attribute["armour_class"]} AC | '
+                        f'{attribute["hit_modifier"]} Hit modifier | '
+                        f'{attribute["effect_modifier"]} Effect modifier | Status: {attribute["status"]}')
+            return ''
+        else:
+            attribute = next((attr for attr in self.enemy.attributes if attr['attribute'] == attribute_id), None)
+            if attribute:
+                return (f'{ATTRIBUTES[attribute_id].capitalize()}: {attribute["current_health_points"]}/'
+                        f'{attribute["health_points"]} HP | {attribute["armour_class"]} AC | '
+                        f'Hit modifier: {attribute["hit_modifier"]} | '
+                        f'Effect modifier: {attribute["effect_modifier"]} | Status: {attribute["status"]}')
+            return ''
 
     def _print_astral_chart(self, is_player: bool):
         aligned = f'{ASTRAL_VALUES[-1]} - '
@@ -36,13 +45,13 @@ class Log:
         misaligned = f'{ASTRAL_VALUES[1]} - '
         entity = self.player if is_player else self.enemy
         for i, alignment in enumerate(entity.astral_chart):
-            if alignment == -1:
+            if alignment == -1 and entity.known_astral_chart[i] == True:
                 aligned += f'{ASTRAL_CHART[i]}, '
-            if alignment == 0:
+            if alignment == 0 and entity.known_astral_chart[i] == True:
                 neutral += f'{ASTRAL_CHART[i]}, '
-            if alignment == 1:
+            if alignment == 1 and entity.known_astral_chart[i] == True:
                 misaligned += f'{ASTRAL_CHART[i]}, '
-        if len(aligned) == 15:
+        if len(aligned) == 10:
             aligned = ''
         else:
             aligned = aligned[:-2] + ' | '
@@ -50,7 +59,7 @@ class Log:
             neutral = ''
         else:
             neutral = neutral[:-2] + ' | '
-        if len(misaligned) == 18:
+        if len(misaligned) == 13:
             misaligned = ''
         else:
             misaligned = misaligned[:-2]
@@ -59,9 +68,9 @@ class Log:
 
     def _print_entity(self, entity: Entity, is_player: bool):
         result = f'{entity.name}\n\t'
-        #if is_player:
+
         result += f'Astral chart: {self._print_astral_chart(is_player=is_player)}\n\t'
-        result += '\n\t'.join([self._print_attribute(entity, attr["attribute"]) for attr in entity.attributes])
+        result += '\n\t'.join([self._print_attribute(is_player, attr["attribute"]) for attr in entity.attributes])
         return result
 
     @_delay_execution
