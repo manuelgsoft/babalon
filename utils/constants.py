@@ -39,9 +39,9 @@ SPECIAL_ARTS = {
 }
 
 ASTRAL_VALUES = {
-    -1: "Aligned with",
+    -1: "Aligned",
     0: "Neutral",
-    1: "Misaligned with"
+    1: "Misaligned"
 }
 
 ASTRAL_CHART = {
