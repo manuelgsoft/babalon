@@ -1,7 +1,8 @@
 {
   "identifier": 0,
   "name": "Elsinar",
-  "astral_chart": [1, 1, 2, 0, 2, 0, 1],
+  "astral_chart": [-1, 0, 1, 0, 0, 0, 0],
+  "known_astral_chart": [true, true, true, true, true, true, true],
   "attributes": [
     {
       "attribute": 0,
@@ -42,7 +43,7 @@
       "attribute": 2,
       "level": 1,
       "armour_class": 4,
-      "hit_modifier": 0,
+      "hit_modifier": 10,
       "effect_modifier": 0,
       "health_points": 6,
       "current_health_points": 6,

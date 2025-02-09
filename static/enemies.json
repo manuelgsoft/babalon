@@ -2,7 +2,8 @@
   {
     "identifier": 0,
     "name": "Mindless sentinel",
-    "astral_chart": [0, 2, 0, 1, 1, 2, 2],
+    "astral_chart": [0, 1, 1, 1, 1, 1, 1],
+    "known_astral_chart": [false, false, false, false, false, false, false],
     "attributes":
     [
       {
@@ -11,8 +12,8 @@
       "armour_class": 4,
       "hit_modifier": 0,
       "effect_modifier": 1,
-      "health_points": 1,
-      "current_health_points": 1,
+      "health_points": 11,
+      "current_health_points": 11,
       "action_points": 0,
       "current_action_points": 0,
       "experience_points": 0,
@@ -26,11 +27,11 @@
       {
       "attribute": 2,
       "level": 1,
-      "armour_class": 4,
+      "armour_class": 3,
       "hit_modifier": 0,
       "effect_modifier": 0,
-      "health_points": 1,
-      "current_health_points": 1,
+      "health_points": 7,
+      "current_health_points": 7,
       "action_points": 0,
       "current_action_points": 0,
       "experience_points": 0,
