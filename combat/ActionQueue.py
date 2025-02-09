@@ -134,7 +134,7 @@ class ActionQueue:
             if current_counts.get(action, 0) < required:
                 return False
 
-        # Define new queue
+        # Define new queues
         new_action_queue = []
         shifted_queue = []
 
@@ -149,17 +149,23 @@ class ActionQueue:
             if number_of_actions > 0:
 
                 # Si astral alignment es igual a 1 añado la acción actual a mi nueva cola como shifted
-                if astral_value == 1:
+                if astral_value == 1 and not current_action.shifted:
                     current_action.shifted = True
                     shifted_queue.append(current_action)
+
+                # Actualizo actions
+                actions[current_attribute] -= 1
 
             # Si de lo contrario es 0, añado la acción actual a mi nueva cola
             else:
                 new_action_queue.append(current_action)
 
+
+
+
         # Después de formar mi nueva cola, si astral_alignment es -1, borro el primer elemento de mi nueva cola
         if astral_value == -1:
-            self.action_queue = new_action_queue.pop(0)
+            self.action_queue = new_action_queue[1:] if new_action_queue else []
         else:
             self.action_queue = new_action_queue + shifted_queue
         return True

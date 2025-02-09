@@ -98,19 +98,22 @@ class Log:
             print(f"{self.player.name}'s transmutation successfully hits")
 
     @_delay_execution
-    def print_astral_alignment_effect(self, astral_value: int = 0, astral_alignment: int = 0):
+    def print_astral_alignment_effect(self, astral_value: int = 0, astral_alignment: int = 0,
+                                      target_is_player: bool = False):
+        name = self.player.name if target_is_player else self.enemy.name
         if astral_value == -1:
-            print(f"Astral chart reveals resistance against {ASTRAL_CHART[astral_alignment].lower()} actions")
+            print(f"{name}'s astral chart reveals resistance against {ASTRAL_CHART[astral_alignment].lower()} actions. An"
+                  f" additional action is consumed")
         elif astral_value == 1:
-            print(f"Astral chart reveals vulnerability to {ASTRAL_CHART[astral_alignment].lower()} actions")
+            print(f"{name}'s astral chart reveals vulnerability to {ASTRAL_CHART[astral_alignment].lower()} actions. Actions shifted!")
 
 
     @_delay_execution
     def print_damage(self, value: int, player_attribute_id: int, enemy_attribute_id: int, target_is_player: bool):
         if target_is_player:
-            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id)} received {value} points of damage")
+            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id)} receives {value} points of damage")
         else:
-            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id)} received {value} points of damage")
+            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id)} receives {value} points of damage")
 
     @_delay_execution
     def print_enemy_turn(self):

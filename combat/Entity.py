@@ -100,13 +100,17 @@ class Entity:
         raise ValueError(f"Attribute '{attribute_id}' not found in entity attributes.")
 
     def update_attribute_status(self, attribute_id: int):
-        for i, status in enumerate(self.attributes[attribute_id]['status']):
+        attribute = next(attr for attr in self.attributes
+                         if attr['attribute'] == attribute_id)
+        for i, status in enumerate(attribute['status']):
             status.pass_action()
             if not status.active:
                 del self.attributes[attribute_id]['status'][i]
 
     def contains_status(self, status_id: int, attribute_id: int):
-        for status in self.attributes[attribute_id]['status']:
+        attribute = next(attr for attr in self.attributes
+                                  if attr['attribute'] == attribute_id)
+        for status in attribute['status']:
             if status.identifier == status_id:
                 return True
         return False

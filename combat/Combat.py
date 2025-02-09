@@ -165,7 +165,8 @@ class Combat:
 
             # Log: Print astral alignment
             if astral_value == -1 or astral_value == 1:
-                self.log.print_astral_alignment_effect(astral_value=astral_value,  astral_alignment=attacking_attribute_id)
+                self.log.print_astral_alignment_effect(astral_value=astral_value,
+                                                       astral_alignment=attacking_attribute_id, target_is_player=not self.player_turn)
 
             # Calculate damage based on maximum effect status
             if attacking_entity.contains_status(status_id=3, attribute_id=attacking_attribute_id):
@@ -205,10 +206,10 @@ class Combat:
         else:
             # Consume action even if astral alignment is correct
             self.action_queue.consume_actions([1 if i == attacking_attribute_id else 0 for i in range(3)],
-                                              astral_value=astral_value)
+                                              astral_value=0)
 
             # Log: Transmutation misses
-            self.log.print_transmutation_miss()
+            self.log.print_transmutation_miss(not self.player_turn)
 
         # Consume active status
         attacking_entity.update_attribute_status(attribute_id=attacking_attribute_id)
