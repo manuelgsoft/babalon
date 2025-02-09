@@ -139,11 +139,6 @@ class Combat:
         # Get the entity that is receiving the transmutation
         defending_entity = self.enemy if self.player_turn else self.player
 
-        self.action_queue.consume_actions([1 if i == attacking_attribute_id else 0 for i in range(3)],
-                                                 shift=defending_entity.astral_chart[attacking_attribute_id] == 1)
-
-
-
         # If there are actions, get the attribute that is performing the transmutation
         attacker_attribute = next(attr for attr in attacking_entity.attributes
                                   if attr['attribute'] == attacking_attribute_id)
@@ -152,28 +147,38 @@ class Combat:
         target_ac = defending_entity.get_active_attributes()[defending_attribute_position]['armour_class']
 
         # Get transmutation mode
-        mode = combat_utils.calculate_mode(attacking_entity, attacking_attribute_id, defending_entity)
+        mode = combat_utils.calculate_mode(attacking_entity, attacking_attribute_id)
+
+        # Calculate astral alignment
+        astral_value = defending_entity.astral_chart[attacking_attribute_id]
 
         # Roll the dice and check against AC
-        if dice.check(number_of_dice=1, sides_of_dice=12, modifier=attacker_attribute['hit_modifier'], value=target_ac, mode=mode):
+        if dice.check(number_of_dice=1, sides_of_dice=12, modifier=attacker_attribute['hit_modifier'],
+                      value=target_ac, mode=mode):
+
             # Shift action if astral alignment is correct
             self.action_queue.consume_actions([1 if i == attacking_attribute_id else 0 for i in range(3)],
-                                              shift=defending_entity.astral_chart[attacking_attribute_id] == 1)
+                                              astral_value=astral_value)
 
             # Log: Print that the transmutation hit
             self.log.print_transmutation_hit(target_is_player=not self.player_turn)
 
-            # Damage is calculated based on maximum effect status
+            # Log: Print astral alignment
+            if astral_value == -1 or astral_value == 1:
+                self.log.print_astral_alignment_effect(astral_value=astral_value,  astral_alignment=attacking_attribute_id)
+
+            # Calculate damage based on maximum effect status
             if attacking_entity.contains_status(status_id=3, attribute_id=attacking_attribute_id):
                 damage = attacker_attribute['level'] * 3
 
-            # Damage is calculated based on minimum effect status
+            # Calculate damage based on minimum effect status
             elif attacking_entity.contains_status(status_id=4, attribute_id=attacking_attribute_id):
                 damage = attacker_attribute['level']
 
             # Calculate damage free of status
             else:
-                damage = dice.throw(number_of_dice=attacker_attribute['level'], sides_of_dice=3) + attacker_attribute['effect_modifier']
+                damage = (dice.throw(number_of_dice=attacker_attribute['level'], sides_of_dice=3) +
+                          attacker_attribute['effect_modifier'])
 
             # Get ID of defending attribute
             defending_attribute_id = defending_entity.get_active_attributes()[defending_attribute_position]['attribute']
@@ -195,11 +200,12 @@ class Combat:
                 enemy_attribute_id = attacking_attribute_id
 
             # Log: Print damage
-            self.log.print_damage(value=damage, player_attribute_id=player_attribute_id, enemy_attribute_id=enemy_attribute_id, target_is_player=not self.player_turn)
+            self.log.print_damage(value=damage, player_attribute_id=player_attribute_id,
+                                  enemy_attribute_id=enemy_attribute_id, target_is_player=not self.player_turn)
         else:
             # Consume action even if astral alignment is correct
             self.action_queue.consume_actions([1 if i == attacking_attribute_id else 0 for i in range(3)],
-                                              shift=False)
+                                              astral_value=astral_value)
 
             # Log: Transmutation misses
             self.log.print_transmutation_miss()

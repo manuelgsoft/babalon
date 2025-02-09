@@ -103,7 +103,7 @@ class ActionQueue:
             current_action.shifted = True
             self.action_queue.append(current_action)
 
-    def consume_actions(self, actions: list[int], shift: bool) -> bool:
+    def consume_actions(self, actions: list[int], astral_value: int) -> bool:
         """
         Consumes actions from the queue based on the specified action requirements.
 
@@ -134,19 +134,32 @@ class ActionQueue:
             if current_counts.get(action, 0) < required:
                 return False
 
-        # Consume the actions from the queue
-        new_queue = []
+        # Define new queue
+        new_action_queue = []
         shifted_queue = []
-        for action in self.action_queue:
-            attribute = action.attribute
-            if actions[attribute] > 0:
-                if not shift:
-                    actions[attribute] -= 1
-                else:
-                    action.shifted = True
-                    shifted_queue.append(action)
-            else:
-                new_queue.append(action)
 
-        self.action_queue = new_queue + shifted_queue
+        # Iterate self.action_queue
+        for current_action in self.action_queue:
+
+            # Me quedo con el attribute del current action y checkeo el valor de actions[current_action]
+            current_attribute = current_action.attribute
+            number_of_actions = actions[current_attribute]
+
+            # Si este último valor es mayor que 0
+            if number_of_actions > 0:
+
+                # Si astral alignment es igual a 1 añado la acción actual a mi nueva cola como shifted
+                if astral_value == 1:
+                    current_action.shifted = True
+                    shifted_queue.append(current_action)
+
+            # Si de lo contrario es 0, añado la acción actual a mi nueva cola
+            else:
+                new_action_queue.append(current_action)
+
+        # Después de formar mi nueva cola, si astral_alignment es -1, borro el primer elemento de mi nueva cola
+        if astral_value == -1:
+            self.action_queue = new_action_queue.pop(0)
+        else:
+            self.action_queue = new_action_queue + shifted_queue
         return True
