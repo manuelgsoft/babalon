@@ -16,7 +16,7 @@ class Log:
     def _delay_execution(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            time.sleep(1)
+            time.sleep(0.5)
             return func(*args, **kwargs)
         return wrapper
 
@@ -51,7 +51,7 @@ class Log:
                 neutral += f'{ASTRAL_CHART[i]}, '
             if alignment == 1 and entity.known_astral_chart[i] == True:
                 misaligned += f'{ASTRAL_CHART[i]}, '
-        if len(aligned) == 10:
+        if len(aligned) == 9:
             aligned = ''
         else:
             aligned = aligned[:-2] + ' | '
@@ -59,7 +59,7 @@ class Log:
             neutral = ''
         else:
             neutral = neutral[:-2] + ' | '
-        if len(misaligned) == 13:
+        if len(misaligned) == 7:
             misaligned = ''
         else:
             misaligned = misaligned[:-2]
@@ -84,22 +84,33 @@ class Log:
         print('Victory!' if player_won else "Defeat...")
 
     @_delay_execution
-    def print_transmutation_miss(self):
-        print('Transmutation missed...')
+    def print_transmutation_miss(self, target_is_player: bool):
+        if target_is_player:
+            print(f"{self.enemy.name}'s transmutation missed")
+        else:
+            print(f"{self.player.name}'s transmutation missed")
 
     @_delay_execution
     def print_transmutation_hit(self, target_is_player: bool):
         if target_is_player:
-            print(f"{self.enemy.name}'s transmutation was a success")
+            print(f"{self.enemy.name}'s transmutation successfully hits")
         else:
-            print(f"{self.player.name}'s transmutation was a success")
+            print(f"{self.player.name}'s transmutation successfully hits")
+
+    @_delay_execution
+    def print_astral_alignment_effect(self, astral_value: int = 0, astral_alignment: int = 0):
+        if astral_value == -1:
+            print(f"Astral chart reveals resistance against {ASTRAL_CHART[astral_alignment].lower()} actions")
+        elif astral_value == 1:
+            print(f"Astral chart reveals vulnerability to {ASTRAL_CHART[astral_alignment].lower()} actions")
+
 
     @_delay_execution
     def print_damage(self, value: int, player_attribute_id: int, enemy_attribute_id: int, target_is_player: bool):
         if target_is_player:
-            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id)} received {value} damage")
+            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id)} received {value} points of damage")
         else:
-            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id)} received {value} damage")
+            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id)} received {value} points of damage")
 
     @_delay_execution
     def print_enemy_turn(self):
@@ -117,13 +128,14 @@ class Log:
         else:
             print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id, 0)} performs a transmutation to "
                   f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id, 0)} ")
+
     @_delay_execution
     def input_transmutations(self, player_attribute_id: int):
         transmutations = '0. Go back\n'
         player_attribute = self.player.attributes[player_attribute_id]
         sides_of_dice = 12 + player_attribute['hit_modifier']
         for i, attr in enumerate(self.enemy.get_active_attributes()):
-            mode = combat_utils.calculate_mode(self.player, player_attribute_id, self.enemy)
+            mode = combat_utils.calculate_mode(self.player, player_attribute_id)
             percentage = dice.percentage(number_of_dice=1, sides_of_dice=sides_of_dice, value=attr['armour_class'],
                                           mode=mode)
             transmutations += f'{i + 1}. '
