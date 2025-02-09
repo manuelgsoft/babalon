@@ -4,7 +4,11 @@ DECISIONES DE DISEÑO
         Shiftear todos los token
     2. Veneno valor fijo o variable
         Valor variable
-    3.
+    3. Qué hacer si tengo desventaja y 2 en astral chart o viceversa
+        Astral chart va por separado, lo único que hace es shiftear tokens (shift current token si 1, consumir dos tokens si -1)
+    4. Cuando activar y desactivar status
+        Al terminar la accion, independientemente de la accion realizada, -1 a todos los status
+
 
 ------------------------------
 
@@ -89,24 +93,7 @@ Status 1: Lose health over time
 Status 2: Remove actions
 
 Status:
-    [0, 0, 0, 0, 0]
-Position meanings:
-    Position 0: Hit advantage
-        0 - Disadvantage
-        1 - Nothing
-        2 - Advantage
-    Position 1: Effect advantage
-        0 - Disadvantage
-        1 - Nothing
-        2 - Advantage
-    Position 2:
-        0 - Don't lose health over time
-        X - Lose health over time during the next X turns
-    Position 3:
-        X - Number of actions lost each turn
-    Position 4:
-        X - Remaining turns in which actions are lost
-
+    status get removed at the end of the action/turn
 
 ------------------------------
 
