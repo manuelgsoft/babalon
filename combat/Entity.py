@@ -80,12 +80,13 @@ class Entity:
     def is_deceased(self) -> bool:
         return len(self.get_active_attributes()) <= 0
 
-    def add_status(self, new_status: Status, attribute_id: int):
+    def add_status(self, status_type: int, remaining_actions: int, effect: int, attribute_id: int):
         if attribute_id not in ATTRIBUTES.keys():
             raise ValueError(f"Invalid attribute '{attribute_id}'. Must be 'body' (0), 'mind' (1), or 'soul' (2).")
         for attr in self.attributes:
             if attr['attribute'] == attribute_id:
-                attr['status'].append(new_status)
+                attr['status'].append(Status(identifier=status_type, remaining_actions=remaining_actions,
+                                             effect=effect))
                 return
         raise ValueError(f"Attribute '{attribute_id}' not found in entity attributes.")
 
