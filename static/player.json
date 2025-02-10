@@ -35,8 +35,8 @@
       "actions_per_turn": 1,
       "available_enhancements": [],
       "enhancements": [],
-      "arts": [1],
-      "emanations": [1],
+      "arts": [3],
+      "emanations": [0],
       "status": []
     },
     {
@@ -53,7 +53,7 @@
       "actions_per_turn": 1,
       "available_enhancements": [],
       "enhancements": [],
-      "arts": [2],
+      "arts": [6],
       "emanations": [2],
       "status": []
     }

@@ -115,5 +115,5 @@ class Entity:
                 return True
         return False
 
-    def discover_astral_chart(self, position: int=0):
+    def discover_astral_chart(self, position: int):
         self.known_astral_chart[position] = True

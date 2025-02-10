@@ -18,12 +18,13 @@ class Art:
     def __repr__(self):
         return f'{self.name}'
 
-    def execute(self, player: Entity, enemy: Entity):
+    def execute(self, player: Entity, enemy: Entity, source_attribute: int, target_attribute: int, target_is_player: bool):
         execution = self.execution_map.get(self.identifier)
         if callable(execution):
-            execution(player=player, enemy=enemy)
+            execution(player=player, enemy=enemy, source_attribute=source_attribute, target_attribute=target_attribute, target_is_player=target_is_player)
         else:
             print(f"No execution mapped for identifier {self.identifier}")
 
-    def _uppercat(self, player: Entity, enemy: Entity):
+    def _uppercat(self, player: Entity, enemy: Entity, source_attribute: int, target_attribute: int, target_is_player: bool):
         pass
+

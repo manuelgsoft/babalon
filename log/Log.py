@@ -1,4 +1,5 @@
 from combat.ActionQueue import ActionQueue
+from combat.Art import Art
 from combat.Entity import Entity
 from utils.constants import ATTRIBUTES, SPECIAL_ARTS, ASTRAL_CHART, ASTRAL_VALUES
 from utils import dice, combat_utils
@@ -102,18 +103,18 @@ class Log:
                                       target_is_player: bool = False):
         name = self.player.name if target_is_player else self.enemy.name
         if astral_value == -1:
-            print(f"{name}'s astral chart reveals resistance against {ASTRAL_CHART[astral_alignment].lower()} actions. An"
+            print(f"{name}'s astral chart reveals resistance against {ASTRAL_CHART[astral_alignment].lower()} aligned actions. An"
                   f" additional action is consumed")
         elif astral_value == 1:
-            print(f"{name}'s astral chart reveals vulnerability to {ASTRAL_CHART[astral_alignment].lower()} actions. Actions shifted!")
+            print(f"{name}'s astral chart reveals vulnerability to {ASTRAL_CHART[astral_alignment].lower()} aligned actions. Action/s shifted!")
 
 
     @_delay_execution
     def print_damage(self, value: int, player_attribute_id: int, enemy_attribute_id: int, target_is_player: bool):
         if target_is_player:
-            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id)} receives {value} points of damage")
+            print(f"{self.player.name}'s {ATTRIBUTES.get(player_attribute_id)} receives {value} damage")
         else:
-            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id)} receives {value} points of damage")
+            print(f"{self.enemy.name}'s {ATTRIBUTES.get(enemy_attribute_id)} receives {value} damage")
 
     @_delay_execution
     def print_enemy_turn(self):
@@ -145,9 +146,29 @@ class Log:
             transmutations += f'[{ASTRAL_CHART[player_attribute_id]}] '
             transmutations += f"Target {ATTRIBUTES[attr["attribute"]]} | "
             transmutations += f'Hit: {percentage}% | '
-            transmutations += f'Damage: {combat_utils.calculate_transmutation_damage_range(self.player, 
+            transmutations += f'Effect: {combat_utils.calculate_transmutation_damage_range(self.player, 
                                                                                            player_attribute_id)}\n'
         return transmutations + 'Select your action:'
+
+    @_delay_execution
+    def input_arts(self, arts: list[Art]):
+        arts_input = '0. Go back\n'
+        for i, art in enumerate(arts):
+            arts_input += f'{i + 1}. [{ASTRAL_CHART[art.alignment]}] {art.name}: {art.description}\n'
+
+        return arts_input + 'Select your action:'
+
+    @_delay_execution
+    def input_art_target(self, target_is_player: bool):
+        arts_input = '0. Go back\n'
+        if target_is_player:
+            active_attributes = self.player.get_active_attributes()
+        else:
+            active_attributes = self.enemy.get_active_attributes()
+        for i, attribute in enumerate(active_attributes):
+            arts_input += f'{i + 1}. Target {ATTRIBUTES[attribute]}'
+
+        return arts_input + 'Select your action:'
 
     @_delay_execution
     def input_actions(self, attribute: int):

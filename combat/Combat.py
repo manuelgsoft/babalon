@@ -1,5 +1,5 @@
 import random
-from arts.ArtFactory import ArtFactory
+from combat.ArtFactory import ArtFactory
 from combat.Entity import Entity
 from combat.ActionQueue import ActionQueue
 from log.Log import Log
@@ -20,14 +20,12 @@ class Combat:
         ArtFactory.load_arts_from_json(unique_arts)
 
     def start(self):
-        """Main combat loop."""
         while not self.combat_over:
             self._execute_turn()
             self._update_combat_status()
         self.log.print_result(player_won=self.player_won)
 
     def _execute_turn(self):
-        """Executes either player or enemy turn based on the current turn."""
         if self.player_turn:
             self._player_turn()
         else:
@@ -104,10 +102,24 @@ class Combat:
             if -1 <= player_input < len(active_attributes):
                 return player_input
 
+    def _get_art_input(self, player_attribute_id):
+        # Ask input until it is correct (range: number of enemy's active attributes)
+        while True:
+
+            # Input target attribute
+            player_input = int(input(self.log.input_arts(arts=ArtFactory.get_arts(self.player.attributes[player_attribute_id]['arts'])))) - 1
+
+            # Go on if input is in the correct range
+            if -1 <= player_input:
+                return player_input
+
     def _handle_player_action(self, player_input, player_attribute_id):
         # Action 1: Transmutation
         if player_input == '1':
             self._player_perform_transmutation(player_attribute_id)
+
+        elif player_input == '2':
+            self._player_perform_art(player_attribute_id)
 
         # Action 4: Shift
         elif player_input == '4':
@@ -131,6 +143,22 @@ class Combat:
 
             # Calculate if transmutation hits. If it's a hit, it deals damage to target attribute and action is consumed
             self._calculate_hit_and_effect_transmutation(player_attribute_id, target_index)
+
+    def _player_perform_art(self, player_attribute_id: int):
+        # List via log all available arts
+        art_input = self._get_art_input(player_attribute_id=player_attribute_id)
+
+        if art_input != -1:
+
+            # Input target
+            target = self.log.input_art_target(False)
+
+            # Select art to execute
+            art = ArtFactory.get_art(self.player.attributes[player_attribute_id]['arts'][art_input])
+
+            # Execute art
+            art.execute(player=self.player, enemy=self.enemy, player_attribute_id=player_attribute_id, enemy_attribute_id=enemy_attribute_id, target_is_player=False)
+
 
     def _calculate_hit_and_effect_transmutation(self, attacking_attribute_id: int, defending_attribute_position: int):
         # Get the entity that is performing the transmutation
@@ -215,11 +243,9 @@ class Combat:
         attacking_entity.update_attribute_status(attribute_id=attacking_attribute_id)
 
     def _update_combat_status(self):
-        """Check if combat has ended and update combat status."""
         self.combat_over, self.player_won = self._combat_is_over()
 
     def _combat_is_over(self):
-        """Check if the combat has ended and return the result."""
         if self.player.is_deceased():
             return True, False  # Player loses
         if self.enemy.is_deceased():

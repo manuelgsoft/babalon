@@ -1,4 +1,4 @@
-from arts.Art import Art
+from combat.Art import Art
 from utils import json_reader
 
 
