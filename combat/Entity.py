@@ -61,6 +61,9 @@ class Entity:
                 return attr['arts']
         raise ValueError(f"Attribute '{attribute_id}' not found in entity attributes.")
 
+    def get_attribute_id_by_position(self, attribute_position: int) -> int:
+        return self.attributes[attribute_position]['attribute']
+
     def get_all_arts(self):
         arts = list()
         for attr in self.attributes:

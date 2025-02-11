@@ -166,7 +166,7 @@ class Log:
         else:
             active_attributes = self.enemy.get_active_attributes()
         for i, attribute in enumerate(active_attributes):
-            arts_input += f'{i + 1}. Target {ATTRIBUTES[attribute]}'
+            arts_input += f'{i + 1}. Target {ATTRIBUTES[attribute['attribute']]}\n'
 
         return arts_input + 'Select your action:'
 
