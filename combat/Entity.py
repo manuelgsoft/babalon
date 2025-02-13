@@ -80,6 +80,15 @@ class Entity:
                 return
         raise ValueError(f"Attribute '{ATTRIBUTES.get(attribute_id)}' not found in entity attributes.")
 
+    def consume_ap(self, attribute_id):
+        if attribute_id not in ATTRIBUTES.keys():
+            raise ValueError(f"Invalid attribute '{attribute_id}'. Must be 'body' (0), 'mind' (1), or 'soul' (2).")
+        for attr in self.attributes:
+            if attr['attribute'] == attribute_id:
+                attr['current_action_points'] -= 1
+                return
+        raise ValueError(f"Attribute '{ATTRIBUTES.get(attribute_id)}' not found in entity attributes.")
+
     def is_deceased(self) -> bool:
         return len(self.get_active_attributes()) <= 0
 

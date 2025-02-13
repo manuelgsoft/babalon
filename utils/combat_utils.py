@@ -3,6 +3,26 @@ from combat.Entity import Entity
 from utils import dice
 
 
+def calculate_hit(source_entity, target_entity, source_attribute_id, target_attribute_id):
+
+    # If there are actions, get the attribute that is performing the transmutation
+    attacker_attribute = next(attr for attr in source_entity.attributes
+                              if attr['attribute'] == source_attribute_id)
+
+    # Get target attribute's AC
+    target_ac = next(attr['armour_class'] for attr in target_entity.attributes
+                     if attr['attribute'] == target_attribute_id)
+
+    # Get transmutation mode
+    mode = calculate_mode(source_entity, source_attribute_id)
+
+    # Roll the dice and check against AC
+    if dice.check(number_of_dice=1, sides_of_dice=12, modifier=attacker_attribute['hit_modifier'],
+                  value=target_ac, mode=mode):
+        return True
+    return False
+
+
 def calculate_mode(attacking_entity: Entity, attacking_attribute_id: int) -> int:
     mode = 0
     if attacking_entity.contains_status(status_id=0, attribute_id=attacking_attribute_id):

@@ -59,6 +59,8 @@ def _perform_transmutation(player, enemy, action_queue, log, player_attribute_id
 
 def _perform_art(player, enemy, action_queue, log, player_attribute_id):
 
+    #TODO: Add "Can't perform because no AP" message
+
     # List via log all available arts
     art_index = _get_art_input(player=player, log=log, player_attribute_id=player_attribute_id)
 
@@ -73,11 +75,14 @@ def _perform_art(player, enemy, action_queue, log, player_attribute_id):
             art = ArtFactory.get_art(player.attributes[player_attribute_id]['arts'][art_index])
 
             # Execute art
-            art.execute(player=player, enemy=enemy, source_attribute_id=player_attribute_id,
-                        target_attribute_id=enemy.get_attribute_id_by_position(target), target_is_player=False)
+            art.execute(source_entity=player, target_entity=enemy, action_queue=action_queue, log=log,
+                        source_attribute_id=player_attribute_id,
+                        target_attribute_id=enemy.get_attribute_id_by_position(target), player_turn=True)
 
 
+#TODO: Refactor inputs so it's just one method
 def _get_transmutation_input(log, active_attributes, player_attribute_id):
+
     # Ask input until it is correct (range: number of enemy's active attributes)
     while True:
 
@@ -90,6 +95,7 @@ def _get_transmutation_input(log, active_attributes, player_attribute_id):
 
 
 def _get_art_input(player, log, player_attribute_id):
+
     # Ask input until it is correct (range: number of enemy's active attributes)
     while True:
 
@@ -102,6 +108,7 @@ def _get_art_input(player, log, player_attribute_id):
 
 
 def _get_art_target_input(log, enemy):
+
     # Ask input until it is correct (range: number of enemy's active attributes)
     while True:
 

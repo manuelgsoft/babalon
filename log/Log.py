@@ -81,22 +81,36 @@ class Log:
         print(f'Action queue\n\t{action_queue}')
 
     @_delay_execution
-    def print_result(self, player_won: bool):
+    def print_result(self, player_won):
         print('Victory!' if player_won else "Defeat...")
 
     @_delay_execution
-    def print_transmutation_miss(self, target_is_player: bool):
+    def print_transmutation_miss(self, target_is_player):
         if target_is_player:
             print(f"{self.enemy.name}'s transmutation missed")
         else:
             print(f"{self.player.name}'s transmutation missed")
 
     @_delay_execution
-    def print_transmutation_hit(self, target_is_player: bool):
+    def print_transmutation_hit(self, target_is_player):
         if target_is_player:
             print(f"{self.enemy.name}'s transmutation successfully hits")
         else:
             print(f"{self.player.name}'s transmutation successfully hits")
+
+    @_delay_execution
+    def print_art_miss(self, target_is_player, art_name):
+        if target_is_player:
+            print(f"{self.enemy.name}'s {art_name} successfully hits")
+        else:
+            print(f"{self.player.name}'s {art_name} successfully hits")
+
+    @_delay_execution
+    def print_art_hit(self, target_is_player, art_name):
+        if target_is_player:
+            print(f"{self.enemy.name}'s {art_name} successfully hits")
+        else:
+            print(f"{self.player.name}'s {art_name} successfully hits")
 
     @_delay_execution
     def print_astral_alignment_effect(self, astral_value: int = 0, astral_alignment: int = 0,
