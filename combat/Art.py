@@ -28,4 +28,3 @@ class Art:
     def _uppercat(self, player: Entity, enemy: Entity, source_attribute: int, target_attribute: int, target_is_player: bool):
         if not target_is_player:
             enemy.deal_damage(10, target_attribute)
-

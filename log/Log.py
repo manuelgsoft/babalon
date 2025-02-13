@@ -144,10 +144,9 @@ class Log:
                                           mode=mode)
             transmutations += f'{i + 1}. '
             transmutations += f'[{ASTRAL_CHART[player_attribute_id]}] '
-            transmutations += f"Target {ATTRIBUTES[attr["attribute"]]} | "
+            transmutations += f'Target {ATTRIBUTES[attr["attribute"]]} | '
             transmutations += f'Hit: {percentage}% | '
-            transmutations += f'Effect: {combat_utils.calculate_transmutation_damage_range(self.player, 
-                                                                                           player_attribute_id)}\n'
+            transmutations += f'Effect: {combat_utils.calculate_transmutation_damage_range(self.player, player_attribute_id)}\n'
         return transmutations + 'Select your action:'
 
     @_delay_execution
@@ -166,7 +165,7 @@ class Log:
         else:
             active_attributes = self.enemy.get_active_attributes()
         for i, attribute in enumerate(active_attributes):
-            arts_input += f'{i + 1}. Target {ATTRIBUTES[attribute['attribute']]}\n'
+            arts_input += f"{i + 1}. Target {ATTRIBUTES[attribute['attribute']]}\n"
 
         return arts_input + 'Select your action:'
 

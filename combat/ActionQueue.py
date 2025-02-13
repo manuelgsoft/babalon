@@ -26,7 +26,8 @@ class ActionQueue:
 
 
     def __repr__(self):
-        return str([f'{ATTRIBUTES[action.attribute]}{'/shifted' if action.shifted else ''}' for action in self.action_queue]) + '\n'
+        return str([f'{ATTRIBUTES[action.attribute]}{"/shifted" if action.shifted else ""}' for action in
+                   self.action_queue]) + '\n'
 
 
     def is_empty(self) -> bool:
